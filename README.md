@@ -3,13 +3,13 @@ En este repo se hace una revisión de los metodos, recomendaciones y buenas prac
 
 ## Contenido
 
-- [1. Objetivos](#objetivos)
-- [2. Introducción](#introduccion)
-- [3. Buenas prácticas](#buenas-practicas)
-- [4. Bibliotecas disponibles](#bibliotecas-disponibles)
-- [5. Tutorial](#tutorial)
-- [6. Conclusiones](#conclusiones)
-- [7. Fuentes](#fuentes)
+- [1. Objetivos](#1-objetivos)
+- [2. Introducción](#2-introduccion)
+- [3. Buenas prácticas](#3-buenas-practicas)
+- [4. Bibliotecas disponibles](#4-bibliotecas-disponibles)
+- [5. Tutorial](#5-tutorial)
+- [6. Conclusiones](#6-conclusiones)
+- [7. Fuentes](#7-fuentes)
 
 ## 1. Objetivos
 
