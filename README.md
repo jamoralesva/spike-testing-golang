@@ -48,13 +48,13 @@ _Código limpio_
 
 Aunque las pruebas no hacen parte explicitamente de lo que se considera códgio de producción, es importante mantener la legibilidad del código de pruebas ya que hacen parte sustancial del proceso del software. (_#TODO complementar_)
 
-_F.I.R.S.T_
+_Principios F.I.R.S.T_
 
-- *F*ast
-- *I*ndependent
-- *R*epeteable:
-- *S*elf-validating
-- *T*imely
+- **F**ast
+- **I**ndependent
+- **R**epeteable:
+- **S**elf-validating
+- **T**imely
 
 _Enfocarse en pruebas que agreguen valor_
 
@@ -65,47 +65,113 @@ El tiempo y la energía de los desarrolladores son recursos limitados dentro de 
 
 ### 3.2 Anatómia de una prueba en Go
 
-Ejemplo de una prueba en go:
-```go
+En esta sección se va revisar la estructura básica de una prueba en golang. Como norma general se crean un archivo de pruebas con el nombre de la "cosa" que se va a probar seguido de el texto '\_test'. Ejemplo, supongamos que tenemos una entidad llamada  _string_ y definimos su comportamiento en un archivo 'string.go', tendrá por tanto su correspondiente 'string_test.go'.
 
+
+Ejemplo de una prueba en go:
+```golang
+//adder_test.go
+package main
+
+import "testing"
+
+ffunc TestWallet(t *testing.T) {
+
+    //Arrange
+    wallet := Wallet{}
+    want := 10
+    
+    //Act
+    wallet.Deposit(10)
+    
+    got := wallet.Balance()
+    
+    //Assert
+    if got != want {
+        t.Errorf("got %d want %d", got, want)
+    }
+}
 ```
+
+En esta porción de código se puede observar lo siguiente:
+
+- Se importa el módulo "testing". 
+- El método de prueba es de acceso público (las primera letra en mayúscula lo indica mas info [aquí]() e inicia con la palabra _Test_.
+- Recibe por parámetro un puntero a un objeto tipo '_testing.T_' el cuál sirve de _hook_ para tener acceso a diferentes útilidades de pruebas. En este caso para acceder al método '_Errorf_' que permite imprimir un mensaje de error en pantalla indicando la razón del fallo de la prueba.
+- La prueba tiene una estructura _Preparar, Actuar y Afirmar_ que detallará en la siguiente sección.
+__Nota__: como se describía al principio de esta sección, los archivos con código de pruebas y código de producción generalmente se encuentran en la misma carpeta, es importante que ambos archivos pertenezcan al mismo paquete y que al estructurar su código tenga cuidado de poner __archivos de código del mismo paquete en la misma carpeta_. (*ref*)
 
 ### 3.3 Patrón AAA
 
+Este patrón aunque mas conocido del mundo Java, permite estructurar las pruebas una forma clara y concisa. Divide el código de la prueba en tres partes:
+
+- _Arrange_ (Preparación): en esta etapa se prepara todo lo que se requiere para la ejecucíon de la prueba, configurar y disponibilizar mocks, stubs, datos de prueba, etc.
+
+- _Act_ (Actuar): una vez se tiene todo listo para realizar la prueba se ejecuta el método o función que se va a probar. 
+
+- _Assert_ (Afirmar): Cómo ya se ejecutó la porción de código que se desea probar, se procede a la validación de las afirmaciones necesarias para comprobar el correcto funcionamiento de la prueba. En esta etapa se debe prestar particular atención en la claridad de los mensajes que se le va a presentar al desarrollador.
+
 Ejemplo sin patrón AAA
 
-```go
+```golang
 
 ```
 
 Con patrón AAA
 
-```go
+```golang
 
 ```
 
+También es importante tener en cuenta la repetibilidad de las pruebas (Principio FIRST)
+
 No repetible
 
-```go
+```golang
 
 ```
 
 Repetible
 
-```go
+```golang
 
 ```
 
-
-
-
 ### 3.4 Pruebas de tipo Benchmark
+
+Otra de las caracteristicas que incluye de manera nativa Golang son las pruebas de desempeño tipo _Benchmark_ que permite tener una idea del desempeño que tiene el código escrito y poder identificar en etapas tempranas de desarrollo posibles puntos de contención que dificulten el escalamiento a futuro.
+
+```golang
+package main
+
+import "testing"
+
+func BenchmarkRepeat(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		Repeat("a")
+	}
+}
+```
+
+TODO: Profundizar mas sobre este tema.
 
 ### 3.4 Usando _Subtests_ y _Sub-benchmarks_
 
 https://blog.golang.org/subtests
 
 ### 3.5 _Table Driven Tests_
+
+Para la realización de pruebas en Golang usando el patrón _Table Driven Test_ es necesario resaltar algunas funciones que pueden ser bastante útiles a la hora de crear pruebas con las herramientas nativas del lenguaje.
+
+- t.Run
+- t.Help
+
+Ejemplo:
+
+```golang
+
+```
+
 
 https://github.com/quii/learn-go-with-tests/blob/main/structs-methods-and-interfaces.md
 
