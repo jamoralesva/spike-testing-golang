@@ -4,8 +4,8 @@ En este repo se hace una revisión de los metodos, recomendaciones y buenas prac
 ## Contenido
 
 - [1. Objetivos](#1-objetivos)
-- [2. Introducción](#2-introduccion)
-- [3. Buenas prácticas](#3-buenas-practicas)
+- [2. Introducción](#2-introducción)
+- [3. Buenas prácticas](#3-buenas-prácticas)
 - [4. Bibliotecas disponibles](#4-bibliotecas-disponibles)
 - [5. Tutorial](#5-tutorial)
 - [6. Conclusiones](#6-conclusiones)
@@ -32,14 +32,68 @@ Generalmente cuando se esta estudiando un nuevo lenguaje de programación no bas
 
 Búscar recomendaciones para la escritura de pruebas a nivel general.
 
-### 3.2 Patrón AAA
+_Dependencias_
 
-### 3.3 Anatómia de una prueba en Go
+En general siempre es buena práctica mantener las dependencias al minimo. La introducción de una nueva dependencia debe argumentarse y tener en cuenta tanto la compatibilidad de licencias, tener un analisis de seguridad para evitar inyectar vulnerabilidades. También dependiendo del tipo de solución (Ejemplo un microservicio o función _serverless_) puede tener muchas dependencias a bibliotecas externas puede tener un impacto considerable en el rendimiento (*ref*).
+
+_Salida de las pruebas con información útil_
+
+Es importante garantizar la mantenibilidad de nuestro código a través de pruebas que provean una retroalimentación adecuada cuando estas fallan. Esto puede reducir tiempos de revisón en el código tratando de entender la razón por la cuál una prueba falló. Siempre debe procurarse por presentar información clara y concisa sobre la(s) causa(s) que generarón el fallo, enfocandose siempre en presentar la causa raíz. Esto no se logra de la noche a la mañana y no existe una receta mágica para lograrlo, sin embargo es valiosa la retroalimentación que puedan brindar los pares cuando se realizan las sesiones de revisión de código.
+
+_Código limpio_
+
+Aunque las pruebas no hacen parte explicitamente de lo que se considera códgio de producción, es importante mantener la legibilidad del código de pruebas ya que hacen parte sustancial del proceso del software. (_#TODO complementar_)
+
+_F.I.R.S.T_
+
+- *F*ast
+- *I*ndependent
+- *R*epeteable:
+- *S*elf-validating
+- *T*imely
+
+_Enfocarse en pruebas que agreguen valor_
+
+El tiempo y la energía de los desarrolladores son recursos limitados dentro de las mesas de trabajo por lo tanto es fundamental enfocarse en aquellas pruebas que agreguen valor al negocio:
+
+- pruebas que validen reglas de negocio.
+- Se puede comenzar por la funcionalidad principal y así sucesivamente ir cubriendo funcionalidades
+
+### 3.2 Anatómia de una prueba en Go
 
 Ejemplo de una prueba en go:
 ```go
 
 ```
+
+### 3.3 Patrón AAA
+
+Ejemplo sin patrón AAA
+
+```go
+
+```
+
+Con patrón AAA
+
+```go
+
+```
+
+No repetible
+
+```go
+
+```
+
+Repetible
+
+```go
+
+```
+
+
+
 
 ### 3.4 Pruebas de tipo Benchmark
 
@@ -68,6 +122,10 @@ TODO: Describir las buenas practicas recomendadas por la comunidad para realizar
 ## 4. Bibliotecas disponibles
 
 TODO: incluir tabla comparativa donde se muestren las herramientas mas utilizadas ventajas/desventejas.
+
+| *Nombre* | *Descripción* | *Ventaja* | *Desventajas*|
+|--|--|--|--|
+
 
 ## 5. Tutorial
 
