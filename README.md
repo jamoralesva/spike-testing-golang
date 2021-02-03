@@ -129,7 +129,8 @@ TODO: incluir tabla comparativa donde se muestren las herramientas mas utilizada
 
 | *Nombre* | *Descripción* | *Ventaja* | *Desventajas*|
 |--|--|--|--|
-
+| [Testify](https://github.com/stretchr/testify) | TODO | TODO | TODO |
+| [HttpExpect](https://github.com/gavv/httpexpect) | TODO | TODO | TODO |
 
 ## 5. Tutorial
 
