@@ -1,5 +1,6 @@
 # spike-testing-golang
 En este repo se hace una revisión de los metodos, recomendaciones y buenas practicas para realizar pruebas automatizadas a código golang. Es un análisis exploratorio con el fin de tener un insumo para aterrizar los lineamientos de golang.
+![logo-go](./doc/assets/logo-go.png)
 
 Por: 
 - @gioguzman-adl
@@ -200,7 +201,7 @@ TODO: incluir tabla comparativa donde se muestren las herramientas mas utilizada
 
 ## 5. Tutorial
 
-TODO: Tutorial donde se pone en practica un ejercicio de TDD usando Golang donde se demuestra el uso de las buenas practicas y las bibliotecas presentadas.
+[Tutorial](./TUTORIAL.md) donde se pone en practica un ejercicio de TDD usando Golang donde se demuestra el uso de las buenas practicas y las bibliotecas presentadas.
 
 ## 6. Conclusiones
 
