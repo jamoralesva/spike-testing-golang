@@ -30,7 +30,7 @@ _Recomendaciones_
  Crear una calculadora simple con entradas tipo ```string``` a través de una función con la siguiente firma:
 
  ```golang
-func Add(numbers: string): int
+func Add(numbers string) int
  ```
 
 - El método debe tomar dos números, separados por comas y retornar su suma, ejemplo de valores de entrada: ```"", "1", "1,2"```.
@@ -47,40 +47,158 @@ _Concejos iniciales_:
 Escribiendo la prueba, importante tener en cuenta el patrón triple AAA:
 
 ```golang
-func TestAdd (t *testing.T) {
- //Arrange
- //Act
- //Assert
-} 
+func TestAdd(t *testing.T) {
+	//Arrange
+	expected := 0
+	//Act
+	outcome := Add("")
+	//Assert
+	if outcome != expected {
+		t.Errorf("Test with empty value failed")
+	}
+}
 ```
 Validamos que la prueba falle (Red step):
 
 ```sh
 $ go test
 ```
-![pantallazo-dia1-red-step](./doc/assets/pantallazo-dia1-red-step.png)
+```
+.\calculator_test.go:9:13: undefined: Add
+```
 
 Agregamos el código necesario para pasar la prueba
 
 ```golang
-func Add(numbers: string): int {
-    //TODO
+func Add(numbers string) int {
+	return 0
 }
 ```
 
-validamos que la prueba sea exitosa (Green step)
+Validamos con `go test` que la prueba sea exitosa (Green step)
 
-```sh
-$ go test
 ```
-![pantallazo-dia1-green-step](./doc/assets/pantallazo-dia1-green-step.png)
+PASS
+ok      _.../code/day1  0.237s
+```
 
 ¡A refactorizar!
 
+Modificamos la prueba para el escenario en el que se recibe un número, sin olvidar el patron trple AAA.
+
+Para agregar un nuevo escenario podemos hacer uso de la herramienta [**_subtest_**](https://golang.org/pkg/testing/#hdr-Subtests_and_Sub_benchmarks) que provee el paquete **_testing_**. En momentos es útil agrupar las pruebas alrededor de "algo" y luego tener subpruebas que describen diferentes escenarios.
+
+En este momento agregaremos un nuevo escenario para validar cuando recibimos un solo número en la función `Add`
+
 ```golang
-func Add(numbers: string): int {
-    //TODO
+func TestAdd(t *testing.T) {
+
+	t.Run("empty value", func(t *testing.T) {
+		//Arrange
+		expected := 0
+		//Act
+		outcome := Add("")
+		//Assert
+		if outcome != expected {
+			t.Errorf("Test with empty value failed")
+		}
+	})
+
+	t.Run("one value", func(t *testing.T) {
+		//Arrange
+		expected := 2
+		//Act
+		outcome := Add("2")
+		//Assert
+		if outcome != expected {
+			t.Errorf("Test with one value failed")
+		}
+	})
 }
+```
+
+Validamos con `go test` que la prueba sea fallida nuevamente (Red step)
+
+```
+--- FAIL: TestAdd (0.00s)
+    --- FAIL: TestAdd/one_value (0.00s)
+        calculator_test.go:25: Test with one value failed
+FAIL
+exit status 1
+```
+
+Ahora que tenemos una prueba fallida bien escrita, modificamos el código agregando un `if` para validar cuando no se reciben números en la cadena de entrada, también utilizamos el paquete [**_strconv_**](https://golang.org/pkg/strconv/) para convertir el número que se recibe en string a int.
+
+```golang
+import "strconv"
+
+func Add(numbers string) int {
+	if len(numbers) == 0 {
+		return 0
+	} else {
+		number, _ := strconv.Atoi(numbers)
+		return number
+	}
+}
+```
+
+Validamos con `go test` que la prueba sea exitosa (Green step)
+
+```
+PASS
+ok      _.../code/day1        0.266s
+```
+
+¡A refactorizar de nuevo!
+
+Por último agregaremos un nuevo escenario en nuetro test para validar cuando recibimos dos números separados por una coma.
+
+```golang
+t.Run("two values", func(t *testing.T) {
+    //Arrange
+    expected := 6
+    //Act
+    outcome := Add("4,2")
+    //Assert
+    if outcome != expected {
+        t.Errorf("Test with one value failed")
+    }
+})
+```
+
+Validamos con `go test` que la prueba sea fallida nuevamente (Red step)
+
+```
+--- FAIL: TestAdd (0.00s)
+    --- FAIL: TestAdd/two_values (0.00s)
+        calculator_test.go:36: Test with one value failed
+FAIL
+exit status 1
+```
+
+Modificamos la función `Add` para agregar 
+Ahora que tenemos nuevamente una prueba fallida bien escrita, modificamos el código para agregar la lógica de suma de dos números, podemos seguir utilizando el paquete **_strconv_**.
+
+```golang
+func Add(numbers string) int {
+	if len(numbers) == 0 {
+		return 0
+	} else if len(numbers) == 1 {
+		number, _ := strconv.Atoi(numbers)
+		return number
+	} else {
+		firstNumber, _ := strconv.Atoi(numbers[:1])
+		secondNumber, _ := strconv.Atoi(numbers[2:])
+		return firstNumber + secondNumber
+	}
+}
+```
+
+Validamos con `go test` que la prueba sea exitosa nuevamente (Green step)
+
+```
+PASS
+ok      _.../code/day1        0.186s
 ```
 
  ### Día 2
