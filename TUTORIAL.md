@@ -210,40 +210,91 @@ ok      _.../code/day1        0.186s
 Escribiendo la prueba, importante tener en cuenta el patrón triple AAA:
 
 ```golang
-func TestAdd (t *testing.T) {
- //Arrange
- //Act
- //Assert
-} 
+t.Run("unknown values", func(t *testing.T) {
+	//Arrange
+	expected := 30
+	//Act
+	outcome := Add("1,6,7,9,3,4")
+	//Assert
+	if outcome != expected {
+		t.Errorf("Test with unknown value failed")
+	}
+})
 ```
-Validamos que la prueba falle (Red step):
+Validamos con `go test` que la prueba falle (Red step)
 
-```sh
-$ go test
 ```
-![pantallazo-dia2-red-step](./doc/assets/pantallazo-dia2-red-step.png)
+--- FAIL: TestAdd (0.00s)
+    --- FAIL: TestAdd/unknown_values (0.00s)
+        calculator_test.go:47: Test with unknown value failed
+FAIL
+exit status 1
+FAIL    _.../code/day2        0.180s
+```
 
 Agregamos el código necesario para pasar la prueba
 
 ```golang
-func Add(numbers: string): int {
-    //TODO
+func Add(numbers string) int {
+	if len(numbers) == 0 {
+		return 0
+	} else if len(numbers) == 1 {
+		number, _ := strconv.Atoi(numbers)
+		return number
+	} else {
+		splitNumbers := strings.Split(numbers, ",")
+		result := 0
+		for i := 0; i < len(splitNumbers); i++ {
+			number, _ := strconv.Atoi(splitNumbers[i])
+			result += number
+		}
+		return result
+	}
 }
 ```
 
 validamos que la prueba sea exitosa (Green step)
 
-```sh
-$ go test
 ```
-![pantallazo-dia2-green-step](./doc/assets/pantallazo-dia2-green-step.png)
+PASS
+ok      _.../code/day2        0.255s
+```
 
 ¡A refactorizar!
 
+En este momento no hay mucho que refactorizar, sin embargo, si vemos nuestro código ya no es necesaria la validación cuando recibimos un solo número, con el ciclo que acabamos de crear estamos cubriendo ese escenario, por esta razón podemos eliminarlo.
+
 ```golang
-func Add(numbers: string): int {
-    //TODO
+func Add(numbers string) int {
+	if len(numbers) == 0 {
+		return 0
+	} else {
+		splitNumbers := strings.Split(numbers, ",")
+		result := 0
+		for i := 0; i < len(splitNumbers); i++ {
+			number, _ := strconv.Atoi(splitNumbers[i])
+			result += number
+		}
+		return result
+	}
 }
+```
+
+Finalmente validamos nuestro set de pruebas unitarias, con `go test -v` podemos verificar la ejecución de cada uno de los escenarios planteados en nuestras pruebas unitarias.
+
+```
+=== RUN   TestAdd
+=== RUN   TestAdd/empty_value
+=== RUN   TestAdd/one_value
+=== RUN   TestAdd/two_values
+=== RUN   TestAdd/unknown_values
+--- PASS: TestAdd (0.00s)
+    --- PASS: TestAdd/empty_value (0.00s)
+    --- PASS: TestAdd/one_value (0.00s)
+    --- PASS: TestAdd/two_values (0.00s)
+    --- PASS: TestAdd/unknown_values (0.00s)
+PASS
+ok      _.../code/day2        0.182s
 ```
 
 ### Día 3

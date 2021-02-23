@@ -36,4 +36,15 @@ func TestAdd(t *testing.T) {
 			t.Errorf("Test with one value failed")
 		}
 	})
+
+	t.Run("unknown values", func(t *testing.T) {
+		//Arrange
+		expected := 30
+		//Act
+		outcome := Add("1,6,7,9,3,4")
+		//Assert
+		if outcome != expected {
+			t.Errorf("Test with unknown value failed")
+		}
+	})
 }
