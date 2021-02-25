@@ -1,5 +1,6 @@
 # spike-testing-golang
 En este repo se hace una revisión de los metodos, recomendaciones y buenas practicas para realizar pruebas automatizadas a código golang. Es un análisis exploratorio con el fin de tener un insumo para aterrizar los lineamientos de golang.
+
 ![logo-go](./doc/assets/logo-go.png)
 
 Por: 
@@ -49,13 +50,32 @@ _Código limpio_
 
 Aunque las pruebas no hacen parte explicitamente de lo que se considera códgio de producción, es importante mantener la legibilidad del código de pruebas ya que hacen parte sustancial del proceso del software. (_#TODO complementar_)
 
+Solo obtenemos valor de las pruebas que usamos activamente, debemos enfocarnos en los aspectos clave de la funcionalidad para probarlo adecuadamente: contamos siempre con tiempo y recursos limitados, por lo tanto es fundamental saber diferenciar el nucleo de la aplicación para prestarle la mayor atención posible: código que representa lógica de negocio compleja es mas importante que el llamado _boilerplate code_.
+
+Sin embargo, es importante no perder de vista el hecho de que el código que _no escribimos_ (bibliotecas y cualquier sistema externo usado en el proyecto) también influye en el comportamiento de la solución que estamos creando, por lo que estaría bien involucrarlos de alguna manera en las pruebas. Para el caso de golang para aplicaciones nativas de la nube, es crucial tener un control sobre las dependencias que se agregan y hacer un esfuerzo para mantenerlas al minimo.
+
+Lo anterior nos lleva a pensar en los costos de mantenimiento que puede acarrear una prueba o peor aún, un conjunto de pruebas que no entrega valor. Cada prueba debe estar justificada (por una regla de negocio por ejemplo) y debe ser fácil para cualquier miembro del equipo identificar el valor que esta entregando.
+
+_4 Pilares de una buena prueba_
+
+- **Protección en lugar de regresión:** Generalmente las _regresiones_ estan asociadas a la búsqueda de errores y pueden ser tareas que consumen mucha energía y recursos, estos errores pueden estar causados por la modificación de la base de código con el fin de agregar una funcionalidad nueva; tiende a ser mas probable cuando la base de código es cada vez mas grande. Por lo tanto se vuelve indispensable crear una buena protección que permita sustentar la evolución del código en el tiempo y evitarnos a futuro dedicar nuestro tiempo a encontrar bugs.
+
+> Maximiza la protección creando un conjunto de pruebas que 'ejercite' tanto código como sea posible
+
+- **Resistencia a la refactorización:** Un paso crucial para la aplicación correcta de TDD es la refactorización, entendiendose esta como la modificicación del código fuente que no altera el comportamiento observable de una funcionalidad. Cuando un prueba _falla_ en la etapa de refactorización y manualmente validamos que la funcionalidad permanece intacta es un mal indicador de la calidad de la prueba misma: este tipo de falsos positivos pueden suceder mas adelante y disminuir la mantenibilidad de nuestro código.
+
+> Las pruebas deben fallar siempre por una buena razón
+- Rapida retroalimentación
+- Mantenibilidad
+
+
 _Principios F.I.R.S.T_
 
-- **F**ast
-- **I**ndependent
-- **R**epeteable:
-- **S**elf-validating
-- **T**imely
+- **F**ast: la ejecuión de la prueba debe ser rapida
+- **I**ndependent: no deben exister dependencias entre pruebas (evitar compartir información o estados)
+- **R**epeteable: las pruebas se deben repetir en cualquier momento o lugar(depender al minimo del ambiente de ejecución) 
+- **S**elf-validating: las pruebas contienen todo lo necesario para validar el concepto que se supone están validando.
+- **T**imely: las pruebas son oportunas, en el sentido de que agregan valor.
 
 _Enfocarse en pruebas que agreguen valor_
 
@@ -76,7 +96,7 @@ package main
 
 import "testing"
 
-ffunc TestWallet(t *testing.T) {
+func TestWallet(t *testing.T) {
 
     //Arrange
     wallet := Wallet{}
@@ -115,28 +135,45 @@ Este patrón aunque mas conocido del mundo Java, permite estructurar las pruebas
 Ejemplo sin patrón AAA
 
 ```golang
+func TestSinPatronAAA(t *testing.T) {
 
+    fac := FindOperationFacade{}
+
+    var filterFindOption [4]string
+
+    filterFindOption[0] = "cotizaciones"
+    filterFindOption[1] = "informacionFinanciera"
+    filterFindOption[2] = "informacionBasicaCotizacion"
+    filterFindOption[3] = "label_informacion_cotizacion"
+
+    resultFilter = fac.FilterFindOptions("es", filterFindOption)
+    if len(resultFilter) != 5 {
+        t.Errorf("got %d want %d", got, want)
+    }
+}
 ```
 
 Con patrón AAA
 
 ```golang
+func TestConPatronAAA(t *testing.T) {
 
+    //Arrange
+    facade := FindOperationFacade{}
+    filterFindOption := getFilterFindOptionPrice()
+    want := 5
+    
+    //Act
+    resultFilter = facade.FilterFindOptions("es", filterFindOption)
+    got := len(resultFilter)
+    
+    //Assert
+    if got != want {
+        t.Errorf("got %d want %d", got, want)
+    }
+}
 ```
 
-También es importante tener en cuenta la repetibilidad de las pruebas (Principio FIRST)
-
-No repetible
-
-```golang
-
-```
-
-Repetible
-
-```golang
-
-```
 
 ### 3.4 Pruebas de tipo Benchmark
 
@@ -205,6 +242,8 @@ TODO: incluir tabla comparativa donde se muestren las herramientas mas utilizada
 
 ## 6. Conclusiones
 
+En esta guía se exploran algunos principios, recomendaciones y buenas practicas para el desarrollo de pruebas automáticas y se relaciona con la programación en Golang. Puede servir de guía introductoria a este lenguaje a la vez que se fortalece una buena cultura de pruebas.
+
 ## 7. Fuentes
 
 - https://github.com/bahlo/go-styleguide#testing
@@ -214,6 +253,9 @@ TODO: incluir tabla comparativa donde se muestren las herramientas mas utilizada
 - Advanced testing in go https://youtu.be/S1O0XI0scOM
 - Advanced testing in golang https://youtu.be/he_q_-Ih37U
 - Automatic Mockfiles generation https://youtu.be/l6q2xa2fEjg
+
+- [Unit Testing Principles, Practices, and Patterns
+by Vladimir Khorikov](https://learning.oreilly.com/library/view/unit-testing-principles/9781617296277/)
 
 
 
