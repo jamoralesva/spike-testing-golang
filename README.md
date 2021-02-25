@@ -241,6 +241,25 @@ Para ejecutar este ejemplo:
 $ cd code
 $ go test -run=TestTime
 ```
+Y debe mostrar esto:
+
+```
+--- FAIL: TestTime (0.00s)
+    --- FAIL: TestTime/12:31_in_Europe/Zuri (0.00s)
+        tdt_test.go:32: could not load location
+    --- FAIL: TestTime/12:31_in_America/New_York (0.00s)
+        tdt_test.go:40: got 07:34; want 7:31
+    --- FAIL: TestTime/08:08_in_Australia/Sydney (0.00s)
+        tdt_test.go:40: got 18:12; want 18:08
+FAIL
+exit status 1
+FAIL    _/Users/****/ws/pocs/spike-testing-golang/code       0.679s
+```
+
+Es posible realizar filtros sobre la tabla de datos:
+```sh
+$ go test -run=TestTime/"in Europe" -v
+```
 
 Usando _Subtests_ y _Sub-benchmarks_
 
