@@ -193,32 +193,71 @@ func BenchmarkRepeat(b *testing.B) {
 
 TODO: Profundizar mas sobre este tema.
 
-### 3.4 Usando _Subtests_ y _Sub-benchmarks_
+### 3.4 _Table Driven Tests_
 
-https://blog.golang.org/subtests
+También conocido como [_Data-Driven-Testing_](https://en.wikipedia.org/wiki/Data-driven_testing) es una metodología de pruebas de software en la cuál se definen las entradas y las salidas esperadas del sistema bajo prueba en una tabla, lo que permite una gran reutlización de código y por ende una mayor mantenibilidad: agregar un caso de prueba es tan simple como agregar una nueva fila a la tabla.
 
-### 3.5 _Table Driven Tests_
+Para la realización de pruebas en Golang se recomienda usar el patrón _Table Driven Test_ que para fortuna de los desarrolladores, esta [soportado de manera nativa](https://github.com/golang/go/wiki/TableDrivenTests) y no es necesario agregar una dependencia adicional para ello.
 
-Para la realización de pruebas en Golang usando el patrón _Table Driven Test_ es necesario resaltar algunas funciones que pueden ser bastante útiles a la hora de crear pruebas con las herramientas nativas del lenguaje.
-
-- t.Run
-- t.Help
-
-Ejemplo:
+En el siguiente fragmento de código se muestra una prueba con el patrón AAA y apoyado de una función _Helper_ para hacer las aserciones.
 
 ```golang
+//Helper function
+func assertTime(t *testing.T, got, want string) {
+    t.Helper() 
+    if got != want {
+        t.Errorf("got %s; want %s", got, want)
+    }
+}
 
+func TestTime(t *testing.T) {
+    testCases := []TimeTestCase {
+        {"12:31", "Europe/Zuri", "13:31"},
+        {"12:31", "America/New_York", "7:31"},
+        {"08:08", "Australia/Sydney", "18:08"},
+    }
+    for _, tc := range testCases {
+        t.Run(fmt.Sprintf("%s in %s", tc.gmt, tc.loc), func(t *testing.T) {
+            //Arrange
+            loc, err := time.LoadLocation(tc.loc)
+            if err != nil {
+                t.Fatal("could not load location")
+            }
+
+            //Act
+            gmt, _ := time.Parse("15:04", tc.gmt)
+            got := gmt.In(loc).Format("15:04")
+            
+            //Assert
+            assertTime(t, got, tc.want)
+            
+        })
+    }
+}
+```
+Para ejecutar este ejemplo: 
+
+```sh
+$ cd code
+$ go test -run=TestTime
 ```
 
+Usando _Subtests_ y _Sub-benchmarks_
 
-https://github.com/quii/learn-go-with-tests/blob/main/structs-methods-and-interfaces.md
+es necesario resaltar algunas funciones que pueden ser bastante útiles a la hora de crear pruebas con las herramientas nativas del lenguaje.
 
-https://github.com/golang/go/wiki/TableDrivenTests
+- t.Run: esta función permite ejecutar casos de pruebas agrupados dentro de una función de forma que tengan una coherencia entre ellas.
+
+- t.Help: permite que indicar que una función es de ayuda, de forma que cuando exista un fallo, se reporte en la linea de código donde se invocó y no la linea donde falló en el cuerpo de la función ayudante. Para comprender mejor esta caracteristica intenta borrar la invocación en la función ```assertTime```.
+
+
+Para mayor información: 
+https://blog.golang.org/subtests
 
 
 ### 3.6 _Mocking_
 
-Hacer una pequeña introducción a la inyección de dependencias en go
+TODO: Hacer una pequeña introducción a la inyección de dependencias en go
 https://github.com/quii/learn-go-with-tests/blob/main/mocking.md
 
 ### 3.6 Pruebas y concurrencia
